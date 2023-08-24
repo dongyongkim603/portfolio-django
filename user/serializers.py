@@ -3,7 +3,7 @@ from rest_framework import serializers
 
 from .models import Category, Forum, Comment
 
-class ForumSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = Forum
         fields = (
@@ -13,15 +13,4 @@ class ForumSerializer(serializers.ModelSerializer):
             'description',
             'get_image',
             'get_thumbnail'
-        )
-
-class CommentSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Forum
-        fields = (
-            'id',
-            'forum',
-            'name',
-            'content',
-            'get_image',
         )
