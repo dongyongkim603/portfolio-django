@@ -17,7 +17,7 @@ class ForumSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Forum
+        model = Comment
         fields = (
             'id',
             'forum',
