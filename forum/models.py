@@ -3,6 +3,7 @@ from PIL import Image
 
 from django.core.files import File
 from django.db import models
+from django.contrib.auth.models import User
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -18,6 +19,7 @@ class Category(models.Model):
         return f'/{self.slug}/'
     
 class Forum(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     category = models.ForeignKey(Category, related_name='forums', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     slug = models.SlugField()
@@ -64,6 +66,7 @@ class Forum(models.Model):
         return thumbnail
 
 class Comment(models.Model):
+    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1)
     forum = models.ForeignKey(Forum, related_name='forums', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     slug = models.SlugField()
