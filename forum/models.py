@@ -4,6 +4,8 @@ from PIL import Image
 from django.core.files import File
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils.text import Truncator
+from django.utils.text import slugify
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -19,7 +21,7 @@ class Category(models.Model):
         return f'/{self.slug}/'
     
 class Forum(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     category = models.ForeignKey(Category, related_name='forums', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     slug = models.SlugField()
@@ -33,6 +35,9 @@ class Forum(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def get_creator(self):
+        return self.creator.username
     
     def get_absolute_url(self):
         return f'/{self.category.slug}/{self.slug}/'
@@ -66,19 +71,37 @@ class Forum(models.Model):
         return thumbnail
 
 class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1)
+    creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1)
     forum = models.ForeignKey(Forum, related_name='forums', on_delete=models.CASCADE)
-    name = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True, blank=True, max_length=255)
     content = models.TextField()
     image = models.ImageField(upload_to='uploads/', blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:
           ordering = ('-date_added',)
+    
+    def generate_slug(self):
+        truncated_content = Truncator(self.content).chars(20)
+        slug_text = f"{self.id}-{self.creator.username}-{slugify(truncated_content)}"
+        return slug_text
 
-    def __str__(self):
-        return self.name
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.creator.username)
+            unique_slug = base_slug
+            num = 1
+
+            while Comment.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{num}"
+                num += 1
+
+            self.slug = unique_slug
+
+        super().save(*args, **kwargs)
+
+    def get_creator(self):
+        return self.creator.username
 
     def get_forum_name(self):
         return f'/{self.forum.name}/{self.slug}/'

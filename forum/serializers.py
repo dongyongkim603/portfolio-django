@@ -19,6 +19,7 @@ class ForumSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
+            'get_creator',
             'get_absolute_url',
             'description',
             'get_image',
@@ -30,8 +31,9 @@ class CommentSerializer(serializers.ModelSerializer):
         model = Comment
         fields = (
             'id',
+            'slug',
             'forum',
-            'name',
+            'get_creator',
             'content',
             'get_image',
         )
