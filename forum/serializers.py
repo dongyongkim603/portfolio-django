@@ -3,6 +3,16 @@ from rest_framework import serializers
 
 from .models import Category, Forum, Comment
 
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = (
+            'id',
+            'name',
+            'slug',
+            'get_absolute_url',
+        )
+
 class ForumSerializer(serializers.ModelSerializer):
     class Meta:
         model = Forum

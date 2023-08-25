@@ -4,8 +4,14 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .models import Forum, Comment
-from .serializers import ForumSerializer, CommentSerializer
+from .models import Forum, Comment, Category
+from .serializers import ForumSerializer, CommentSerializer, CategorySerializer
+
+class AllCategroiesList(APIView):
+    def get(self, request, format=None):
+        categories = Category.objects.all()[0:100]
+        serializer = CategorySerializer(categories, many=True)
+        return Response(serializer.data)
 
 class LatestForumsList(APIView):
     def get(self, request, format=None):
