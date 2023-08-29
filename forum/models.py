@@ -38,6 +38,9 @@ class Forum(models.Model):
     
     def get_creator(self):
         return self.creator.username
+
+    def get_category(self):
+        return self.category.name
     
     def get_absolute_url(self):
         return f'/{self.category.slug}/{self.slug}/'

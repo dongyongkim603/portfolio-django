@@ -19,6 +19,7 @@ class ForumSerializer(serializers.ModelSerializer):
         fields = (
             'id',
             'name',
+            'get_category',
             'get_creator',
             'get_absolute_url',
             'description',
