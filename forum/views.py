@@ -2,6 +2,8 @@ from django.http import Http404
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from rest_framework import status
 
 from .models import Forum, Comment, Category
 from .serializers import ForumSerializer, CommentSerializer, CategorySerializer
@@ -30,8 +32,14 @@ class ForumDetail(APIView):
         serializer = ForumSerializer(forum)
         return Response(serializer.data)
 
-class LatestCommentsList(APIView):
+class Comments(APIView):
     def get(self, request, format=None):
         comments = Comment.objects.all()[0:40]
         serializer = CommentSerializer(comments, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, format=None):
+        serializer = CommentSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
