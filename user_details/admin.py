@@ -10,6 +10,14 @@ class UserDetailsInline(admin.StackedInline):
     can_delete = False
 
 class AccountsUserAdmin(AuthUserAdmin):
+    def add_view(self, *args, **kwargs):
+        self.inlines = []
+        return super(AccountsUserAdmin, self).add_view(*args, **kwargs)
+    
+    def change_view(self, *args, **kwargs):
+        self.inlines = [UserDetailsInline]
+        return super(AccountsUserAdmin, self).change_view(*args, **kwargs)
+
     inlines = [UserDetailsInline]
 
 admin.site.unregister(User)
