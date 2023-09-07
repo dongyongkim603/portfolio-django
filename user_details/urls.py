@@ -5,5 +5,5 @@ from user_details import views
 app_name = 'user_details'
 
 urlpatterns = [
-  path('profile/', views.update_profile, name='profile')
+  path('profile/<str:username>', views.UserDetails.as_view())
 ]
