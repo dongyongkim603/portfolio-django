@@ -48,6 +48,13 @@ class UserDetails(APIView):
     
     permission_classes = [IsAuthenticatedOrReadOnly]
 
+    def get_object(self, username):
+        try:
+            full_user_details = User.objects.get(username=username)
+            return full_user_details
+        except User.DoesNotExist:
+            raise Http404
+
     @login_required
     @transaction.atomic
     def post(self, request, format=None):
@@ -61,7 +68,8 @@ class UserDetails(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
-    def get(self, request, format=None):
-        details = UserDetails.objects.all()[0:100]
-        serializer = UserDetailSerializer(details, many=True)
+    def get(self, request, username, format=None):
+        details = self.get_object(username)
+        print(details)
+        serializer = UserDetailSerializer(details)
         return Response(serializer.data)
