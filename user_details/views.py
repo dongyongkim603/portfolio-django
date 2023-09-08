@@ -17,41 +17,15 @@ from .models import UserDetails
 from .serializers import UserDetailSerializer
 
 
-# class UserForm(forms.ModelForm):
-#     class Meta:
-#         model = User
-#         fields = ('first_name', 'last_name')
-
-# class UserDetailsForm(forms.ModelForm):
-#     class Meta:
-#         model = UserDetails
-#         fields = ('age', 'profile_image')
-
-# @login_required
-# @transaction.atomic
-# def update_profile(request):
-#     if request.method == "POST":
-#         user_form = UserForm(request.POST, instance=request.user)
-#         user_details_form = UserDetailsForm(request.POST, instance=request.user.userdetails)
-#         if user_form.is_valid() and user_details_form.is_valid():
-#             user_form.save()
-#             user_details_form.save()
-#             return Response(status=status.HTTP_200_OK)
-#         else:
-#             return Response(status=status.HTTP_400_BAD_REQUEST)
-#     else:
-#         user_form = UserForm(instance=request.user)
-#         user_details_form = UserDetailsForm(instance=request.user.userdetails)
-#     return render(request, 'profile.html', {"u_form":user_form, "p_form": user_details_form})
-
-class UserDetails(APIView):
+class AllUserDetails(APIView):
     
     permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_object(self, username):
+    def get_object(self, username, request):
         try:
-            full_user_details = User.objects.get(username=username)
-            return full_user_details
+            user = User.objects.get(username=username)
+            user_details = UserDetails.objects.get(user=user)
+            return user_details
         except User.DoesNotExist:
             raise Http404
 
@@ -69,7 +43,10 @@ class UserDetails(APIView):
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, username, format=None):
-        details = self.get_object(username)
-        print(details)
-        serializer = UserDetailSerializer(details)
-        return Response(serializer.data)
+        details = self.get_object(username, request)
+        try:
+            serializer = UserDetailSerializer(details)
+            print(serializer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except:
+            return Response(serializer.data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

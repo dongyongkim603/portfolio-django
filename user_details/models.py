@@ -23,17 +23,35 @@ class UserDetails(models.Model):
     def get_user_id(self):
         return self.user.id
     
-    def get_image(self):
-        if self.image:
-            return 'http://127.0.0.1:8000' + self.image.url
+    def get_first_name(self):
+        return self.user.first_name
+    
+    def get_last_name(self):
+        return self.user.last_name
+
+    def get_is_superuser(self):
+        return self.user.is_superuser
+    
+    def get_is_active(self):
+        return self.user.is_active
+
+    def get_date_joined(self):
+        return self.user.date_joined
+    
+    def get_email(self):
+        return self.user.email
+    
+    def get_profile_image(self):
+        if self.profile_image:
+            return 'http://127.0.0.1:8000' + self.profile_image.url
         return ''
 
     def get_thumbnail(self):
         if self.thumbnail:
             return 'http://127.0.0.1:8000' + self.thumbnail.url
         else:
-            if self.image:
-                self.thumbnail = self.make_thumbnail(self.image)
+            if self.profile_image:
+                self.thumbnail = self.make_thumbnail(self.profile_image)
                 self.save()
 
                 return 'http://127.0.0.1:8000' + self.thumbnail.url
