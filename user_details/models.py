@@ -14,6 +14,7 @@ def user_directory_path(instance, filename):
 class UserDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField(null=True, blank=True)
+    bio = models.TextField(blank=True, null=True)
     profile_image = models.ImageField(upload_to=user_directory_path, blank=True, null=True)
     thumbnail = models.ImageField(upload_to=user_directory_path, blank=True, null=True)
 

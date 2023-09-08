@@ -9,6 +9,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         fields = (
             'get_user_id',
             'age',
+            'bio',
             'get_profile_image',
             'get_thumbnail',
             'get_first_name',
