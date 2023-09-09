@@ -37,4 +37,6 @@ class CommentSerializer(serializers.ModelSerializer):
             'get_creator',
             'content',
             'get_image',
+            'get_creator_thumbnail',
+            'date_added'
         )

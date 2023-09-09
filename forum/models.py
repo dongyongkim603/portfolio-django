@@ -6,6 +6,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import Truncator
 from django.utils.text import slugify
+from user_details.models import UserDetails
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
@@ -22,6 +23,7 @@ class Category(models.Model):
     
 class Forum(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
+    creator_details = models.ForeignKey(UserDetails, on_delete=models.CASCADE, default=1)
     category = models.ForeignKey(Category, related_name='forums', on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
     slug = models.SlugField()
@@ -75,6 +77,7 @@ class Forum(models.Model):
 
 class Comment(models.Model):
     creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1)
+    creator_details = models.ForeignKey(UserDetails, on_delete=models.CASCADE, default=1)
     forum = models.ForeignKey(Forum, related_name='forums', on_delete=models.CASCADE)
     slug = models.SlugField(unique=True, blank=True, max_length=255)
     content = models.TextField()
@@ -83,6 +86,9 @@ class Comment(models.Model):
 
     class Meta:
           ordering = ('-date_added',)
+
+    def get_creator_thumbnail(self):
+        return self.creator_details.get_thumbnail()
     
     def generate_slug(self):
         truncated_content = Truncator(self.content).chars(20)
