@@ -47,7 +47,7 @@ class Forum(models.Model):
     def get_category_id(self):
         return self.category.id
 
-    def get_category(self):
+    def get_category_name(self):
         return self.category.name
     
     def get_absolute_url(self):
