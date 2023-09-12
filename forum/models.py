@@ -24,7 +24,7 @@ class Category(models.Model):
 class Forum(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, default=1)
     creator_details = models.ForeignKey(UserDetails, on_delete=models.CASCADE, default=1)
-    category = models.ForeignKey(Category, related_name='forums', on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='category', on_delete=models.CASCADE, default=1)
     name = models.CharField(max_length=255)
     slug = models.SlugField()
     description = models.TextField(blank=True, null=True)
