@@ -38,10 +38,16 @@ class Forum(models.Model):
     def __str__(self):
         return self.name
     
-    def get_creator(self):
+    def get_creator_id(self):
+        return self.creator.id
+
+    def get_creator_name(self):
         return self.creator.username
 
-    def get_category(self):
+    def get_category_id(self):
+        return self.category.id
+
+    def get_category_name(self):
         return self.category.name
     
     def get_absolute_url(self):
