@@ -10,13 +10,18 @@ from user_details.models import UserDetails
 
 class Category(models.Model):
     name = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
 
     class Meta:
         ordering = ('name',)
 
     def __str__(self):
         return self.name
+    
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+
+        super().save(*args, **kwargs)
     
     def get_absolute_url(self):
         return f'/{self.slug}/'
@@ -26,7 +31,7 @@ class Forum(models.Model):
     creator_details = models.ForeignKey(UserDetails, on_delete=models.CASCADE, default=1)
     category = models.ForeignKey(Category, related_name='category', on_delete=models.CASCADE, default=1)
     name = models.CharField(max_length=255)
-    slug = models.SlugField()
+    slug = models.SlugField(unique=True)
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to='uploads/', blank=True, null=True)
     thumbnail = models.ImageField(upload_to='uploads/', blank=True, null=True)
@@ -37,6 +42,11 @@ class Forum(models.Model):
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+
+        super().save(*args, **kwargs)
     
     def get_creator_id(self):
         return self.creator.id

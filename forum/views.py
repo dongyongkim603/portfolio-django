@@ -40,7 +40,6 @@ class ForumDetail(APIView):
         return Response(serializer.data)
     
     def post(self, request, format=None):
-        print(request.data)
         serializer = ForumSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
