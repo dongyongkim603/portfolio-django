@@ -38,6 +38,14 @@ class ForumDetail(APIView):
         forum = self.get_object(category_slug, forum_slug)
         serializer = ForumSerializer(forum)
         return Response(serializer.data)
+    
+    def post(self, request, format=None):
+        print(request.data)
+        serializer = ForumSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class Comments(APIView):
   
