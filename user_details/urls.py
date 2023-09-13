@@ -5,5 +5,7 @@ from user_details import views
 app_name = 'user_details'
 
 urlpatterns = [
-  path('profile/<str:username>/', views.AllUserDetails.as_view())
+  path('profile/', views.AllUserDetails.as_view()),
+  path('profile/<str:username>/', views.AllUserDetails.as_view()),
+  path('edit-profile/<int:pk>/', views.UserDetailsPatchView.as_view()),
 ]

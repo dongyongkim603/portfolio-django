@@ -7,9 +7,12 @@ class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserDetails
         fields = (
+            'user',
             'get_user_id',
             'age',
             'bio',
+            'profile_image',
+            'thumbnail',
             'get_profile_image',
             'get_thumbnail',
             'get_first_name',

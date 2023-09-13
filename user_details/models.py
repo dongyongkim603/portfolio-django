@@ -15,11 +15,14 @@ class UserDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField(null=True, blank=True)
     bio = models.TextField(blank=True, null=True)
-    profile_image = models.ImageField(upload_to=user_directory_path, blank=True, null=True)
-    thumbnail = models.ImageField(upload_to=user_directory_path, blank=True, null=True)
+    profile_image = models.URLField(blank=True, unique=False, null=True, max_length=2000)
+    thumbnail = models.URLField(blank=True, unique=False, null=True, max_length=2000)
 
     def __str__(self):
         return self.user.username
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
     def get_user_id(self):
         return self.user.id
@@ -43,21 +46,23 @@ class UserDetails(models.Model):
         return self.user.email
     
     def get_profile_image(self):
-        if self.profile_image:
-            return 'http://127.0.0.1:8000' + self.profile_image.url
-        return ''
+        return self.profile_image
+        # if self.profile_image:
+        #     return 'http://127.0.0.1:8000' + self.profile_image.url
+        # return ''
 
     def get_thumbnail(self):
-        if self.thumbnail:
-            return 'http://127.0.0.1:8000' + self.thumbnail.url
-        else:
-            if self.profile_image:
-                self.thumbnail = self.make_thumbnail(self.profile_image)
-                self.save()
+        return self.thumbnail
+        # if self.thumbnail:
+        #     return 'http://127.0.0.1:8000' + self.thumbnail.url
+        # else:
+        #     if self.profile_image:
+        #         self.thumbnail = self.make_thumbnail(self.profile_image)
+        #         self.save()
 
-                return 'http://127.0.0.1:8000' + self.thumbnail.url
-            else:
-                return ''
+        #         return 'http://127.0.0.1:8000' + self.thumbnail.url
+        #     else:
+        #         return ''
     
     def make_thumbnail(self, image, size=(300, 200)):
         img = Image.open(image)

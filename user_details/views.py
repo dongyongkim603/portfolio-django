@@ -16,6 +16,26 @@ from django.contrib.auth.decorators import login_required
 from .models import UserDetails
 from .serializers import UserDetailSerializer
 
+class UserDetailsPatchView(APIView):
+
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def patch(self, request, pk, format=None):
+        try:
+            user_details = UserDetails.objects.get(pk=pk)
+        except UserDetails.DoesNotExist:
+            return Response({"detail": "UserDetails not found."}, status=status.HTTP_404_NOT_FOUND)
+        if 'age' in request.data:
+            user_details.age = request.data['age']
+        if 'bio' in request.data:
+            user_details.bio = request.data['bio']
+        if 'profile_image' in request.data:
+            user_details.profile_image = request.data['profile_image']
+        if 'thumbnail' in request.data:
+            user_details.thumbnail = request.data['thumbnail']
+        serializer = UserDetailSerializer(user_details)
+        user_details.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class AllUserDetails(APIView):
     
@@ -29,15 +49,10 @@ class AllUserDetails(APIView):
         except User.DoesNotExist:
             raise Http404
 
-    @login_required
     @transaction.atomic
     def post(self, request, format=None):
         serializer = UserDetailSerializer(data=request.data)
-        # user_form = UserForm(request.POST, instance=request.user)
-        # user_details_form = UserDetailsForm(request.POST, instance=request.user.userdetails)
-        if serializer.is_valid():#user_form.is_valid() and user_details_form.is_valid():
-            # user_form.save()
-            # user_details_form.save()
+        if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
