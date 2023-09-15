@@ -6,15 +6,17 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.utils.text import Truncator
+from django.utils.text import slugify
 
 def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/uploads/<username>/filename
     return f'uploads/{instance.user.username}/{filename}'
 
 class UserDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField(null=True, blank=True)
-    bio = models.TextField(blank=True, null=True)
+    birthday = models.DateField(blank=True, null=True)
+    bio = models.TextField(blank=True, unique=False, null=True,)
     profile_image = models.URLField(blank=True, unique=False, null=True, max_length=2000)
     thumbnail = models.URLField(blank=True, unique=False, null=True, max_length=2000)
 
@@ -46,10 +48,9 @@ class UserDetails(models.Model):
         return self.user.email
     
     def get_profile_image(self):
-        return self.profile_image
-        # if self.profile_image:
-        #     return 'http://127.0.0.1:8000' + self.profile_image.url
-        # return ''
+        if self.profile_image:
+            return self.profile_image
+        return ''
 
     def get_thumbnail(self):
         return self.thumbnail
@@ -79,3 +80,39 @@ class UserDetails(models.Model):
 def create_user_details(sender, instance, created, **kwargs):
     if created:
         UserDetails.objects.create(user=instance)
+
+class UserPost(models.Model):
+    creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1)
+    creator_details = models.ForeignKey(UserDetails, on_delete=models.CASCADE, default=1)
+    slug = models.SlugField(unique=True, blank=True, max_length=255)
+    description = models.TextField(blank=True, unique=False, null=True,)
+    image_url = models.URLField(blank=True, unique=False, null=True, max_length=2000)
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+          ordering = ('-date_added',)
+
+    def get_creator_thumbnail(self):
+        return self.creator_details.get_thumbnail()
+    
+    def generate_slug(self):
+        truncated_content = Truncator(self.content).chars(20)
+        slug_text = f"{self.id}-{self.creator.username}-{slugify(truncated_content)}"
+        return slug_text
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            base_slug = slugify(self.creator.username)
+            unique_slug = base_slug
+            num = 1
+
+            while UserPost.objects.filter(slug=unique_slug).exists():
+                unique_slug = f"{base_slug}-{num}"
+                num += 1
+
+            self.slug = unique_slug
+
+        super().save(*args, **kwargs)
+
+    def get_creator(self):
+        return self.creator.username

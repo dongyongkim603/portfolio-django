@@ -1,7 +1,7 @@
 from django.db import models
 from rest_framework import serializers
 
-from .models import UserDetails
+from .models import UserDetails, UserPost
 
 class UserDetailSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,7 +9,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         fields = (
             'user',
             'get_user_id',
-            'age',
+            'birthday',
             'bio',
             'profile_image',
             'thumbnail',
@@ -21,4 +21,15 @@ class UserDetailSerializer(serializers.ModelSerializer):
             'get_is_active',
             'get_date_joined',
             'get_email'
+        )
+
+class UserPostSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserPost
+        fields = (
+            'get_creator_thumbnail',
+            'get_creator',
+            'creator_details',
+            'description',
+            'image_url'
         )
