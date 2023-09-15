@@ -13,8 +13,8 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 
-from .models import UserDetails
-from .serializers import UserDetailSerializer
+from .models import UserDetails, UserPost
+from .serializers import UserDetailSerializer, UserPostSerializer
 
 class UserDetailsPatchView(APIView):
 
@@ -65,3 +65,19 @@ class AllUserDetails(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         except:
             return Response(serializer.data, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class AllUserPost(APIView):
+  
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request, format=None):
+        user_post = UserPost.objects.all()[0:40]
+        serializer = UserPostSerializer(user_post, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, format=None):
+        serializer = UserPostSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

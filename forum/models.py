@@ -97,7 +97,7 @@ class Comment(models.Model):
     forum = models.ForeignKey(Forum, related_name='forums', on_delete=models.CASCADE)
     slug = models.SlugField(unique=True, blank=True, max_length=255)
     content = models.TextField()
-    image = models.ImageField(upload_to='uploads/', blank=True, null=True)
+    image_url = models.ImageField(upload_to='uploads/', blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)
 
     class Meta:
