@@ -70,16 +70,16 @@ class AllUserPost(APIView):
   
     # permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get_object(self, pk, request):
+    def get_object(self, username, request):
         try:
-            creator = User.objects.get(id=pk)
-            user_details = UserPost.objects.get(creator=creator)
-            return user_details
+            creator = User.objects.get(username=username)
+            user_posts = UserPost.objects.filter(creator=creator)
+            return user_posts
         except UserPost.DoesNotExist:
             raise Http404
 
-    def get(self, request, pk, format=None):
-        user = self.get_object(pk, request)
+    def get(self, request, username, format=None):
+        user = self.get_object(username, request)
         user_post = UserPost.objects.all()[0:40]
         serializer = UserPostSerializer(user_post, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
