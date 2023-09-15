@@ -100,6 +100,9 @@ class UserPost(models.Model):
         slug_text = f"{self.id}-{self.creator.username}-{slugify(truncated_content)}"
         return slug_text
 
+    def get_date_added(self):
+        return self.date_added
+
     def save(self, *args, **kwargs):
         if not self.slug:
             base_slug = slugify(self.creator.username)

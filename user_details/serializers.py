@@ -31,5 +31,6 @@ class UserPostSerializer(serializers.ModelSerializer):
             'get_creator',
             'creator_details',
             'description',
-            'image_url'
+            'image_url',
+            'get_date_added'
         )
