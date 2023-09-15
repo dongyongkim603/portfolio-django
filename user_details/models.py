@@ -6,6 +6,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.utils.text import Truncator
+from django.utils.text import slugify
 
 def user_directory_path(instance, filename):
     return f'uploads/{instance.user.username}/{filename}'
@@ -14,6 +16,7 @@ class UserDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField(null=True, blank=True)
     birthday = models.DateField(blank=True, null=True)
+    bio = models.TextField(blank=True, unique=False, null=True,)
     profile_image = models.URLField(blank=True, unique=False, null=True, max_length=2000)
     thumbnail = models.URLField(blank=True, unique=False, null=True, max_length=2000)
 
@@ -82,7 +85,7 @@ class UserPost(models.Model):
     creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1)
     creator_details = models.ForeignKey(UserDetails, on_delete=models.CASCADE, default=1)
     slug = models.SlugField(unique=True, blank=True, max_length=255)
-    description = models.TextField()
+    description = models.TextField(blank=True, unique=False, null=True,)
     image_url = models.URLField(blank=True, unique=False, null=True, max_length=2000)
     date_added = models.DateTimeField(auto_now_add=True)
 
@@ -113,8 +116,3 @@ class UserPost(models.Model):
 
     def get_creator(self):
         return self.creator.username
-
-    def get_image(self):
-        if self.image:
-            return 'http://127.0.0.1:8000' + self.image.url
-        return ''

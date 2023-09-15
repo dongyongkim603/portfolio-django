@@ -9,7 +9,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
         fields = (
             'user',
             'get_user_id',
-            'age',
+            'birthday',
             'bio',
             'profile_image',
             'thumbnail',
@@ -30,8 +30,6 @@ class UserPostSerializer(serializers.ModelSerializer):
             'get_creator_thumbnail',
             'get_creator',
             'creator_details',
-            'get_image',
-            'get_absolute_url',
             'description',
             'image_url'
         )

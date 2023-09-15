@@ -25,8 +25,8 @@ class UserDetailsPatchView(APIView):
             user_details = UserDetails.objects.get(pk=pk)
         except UserDetails.DoesNotExist:
             return Response({"detail": "UserDetails not found."}, status=status.HTTP_404_NOT_FOUND)
-        if 'age' in request.data:
-            user_details.age = request.data['age']
+        if 'birthday' in request.data:
+            user_details.birthday = request.data['birthday']
         if 'bio' in request.data:
             user_details.bio = request.data['bio']
         if 'profile_image' in request.data:
@@ -68,15 +68,25 @@ class AllUserDetails(APIView):
 
 class AllUserPost(APIView):
   
-    permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
 
-    def get(self, request, format=None):
+    def get_object(self, pk, request):
+        try:
+            creator = User.objects.get(id=pk)
+            user_details = UserPost.objects.get(creator=creator)
+            return user_details
+        except UserPost.DoesNotExist:
+            raise Http404
+
+    def get(self, request, pk, format=None):
+        user = self.get_object(pk, request)
         user_post = UserPost.objects.all()[0:40]
         serializer = UserPostSerializer(user_post, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
     def post(self, request, format=None):
         serializer = UserPostSerializer(data=request.data)
+        print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
