@@ -5,6 +5,7 @@ from django.urls import conf, path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/v1/', include('page_details.urls', namespace="page_details")),
     path('api/v1/', include('user_details.urls', namespace="user_details")),
     path('api/v1/', include('djoser.urls')),
     path('api/v1/', include('djoser.urls.authtoken')),
