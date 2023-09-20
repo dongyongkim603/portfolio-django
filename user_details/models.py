@@ -12,6 +12,9 @@ from django.utils.text import slugify
 def user_directory_path(instance, filename):
     return f'uploads/{instance.user.username}/{filename}'
 
+if __name__ == "__main__":
+    docx_file_path = "document.docx"
+
 class UserDetails(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     age = models.IntegerField(null=True, blank=True)
@@ -85,7 +88,7 @@ class UserPost(models.Model):
     creator = models.ForeignKey(User, on_delete=models.DO_NOTHING, default=1)
     creator_details = models.ForeignKey(UserDetails, on_delete=models.CASCADE, default=1)
     slug = models.SlugField(unique=True, blank=True, max_length=255)
-    description = models.TextField(blank=True, unique=False, null=True,)
+    description = models.TextField(blank=True, unique=False, null=True)
     image_url = models.URLField(blank=True, unique=False, null=True, max_length=2000)
     date_added = models.DateTimeField(auto_now_add=True)
 

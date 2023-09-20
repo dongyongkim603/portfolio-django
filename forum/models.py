@@ -131,9 +131,6 @@ class Comment(models.Model):
     def get_forum_name(self):
         return f'/{self.forum.name}/{self.slug}/'
     
-    # def get_absolute_url(self):
-    #     return f'/{self.category.slug}/{self.slug}/'
-
     def get_image(self):
         if self.image:
             return 'http://127.0.0.1:8000' + self.image.url

@@ -20,7 +20,7 @@ class UserDetailSerializer(serializers.ModelSerializer):
             'get_is_superuser',
             'get_is_active',
             'get_date_joined',
-            'get_email'
+            'get_email',
         )
 
 class UserPostSerializer(serializers.ModelSerializer):
