@@ -1,4 +1,6 @@
 from django.core.files import File
+from django.utils.text import Truncator
+from django.utils.text import slugify
 from django.db import models
 import mammoth
 
@@ -15,14 +17,24 @@ if __name__ == "__main__":
     converted_html = convert_docx_to_html(docx_file_path)
 
 class PageDetails(models.Model):
+    name = models.CharField(max_length=255,blank=True, null=True)
+    slug = models.SlugField(unique=True, blank=True, null=True, max_length=255)
     url = models.URLField(blank=True, null=True)
     resume = models.FileField(upload_to="uploads/resumes/", blank=True, unique=False, null=True)
-
-    def __str__(self):
-        return self.user.username
+    
+    class Meta:
+        app_label = 'page_details' 
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+    
+    def generate_slug(self):
+        truncated_content = Truncator(self.name).chars(20)
+        slug_text = slugify(truncated_content)
+        return slug_text
+    
+    def get_slug(self):
+        return self.slug
 
     def get_resume(self):
         if self.resume:

@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'djoser',
     'forum',
+    'page_details',
     'user_details'
 ]
 

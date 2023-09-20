@@ -1,12 +1,13 @@
 from django.db import models
 from rest_framework import serializers
 
-from .models import PostDetails
+from .models import PageDetails
 
 class PageDetailSerializer(serializers.ModelSerializer):
     class Meta:
-        model = PostDetails
+        model = PageDetails
         fields = (
             'get_resume',
-            'url'
+            'url',
+            'get_slug'
         )
