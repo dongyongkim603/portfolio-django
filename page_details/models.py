@@ -44,6 +44,7 @@ class PageDetails(models.Model):
 
     def get_resume_file(self):
         if self.resume:
-            resume_path = self.resume.path
-            return resume_path
-        return ''
+            with open(self.resume.path, 'rb') as resume_file:
+                opened_file = resume_file.read()
+            return opened_file
+        return None
