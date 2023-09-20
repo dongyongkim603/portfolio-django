@@ -6,4 +6,5 @@ app_name = 'page_details'
 
 urlpatterns = [
   path('homepage-detail/', views.HomePageDetails.as_view()),
+  path('download-resume/', views.DownloadResume.as_view()),
 ]

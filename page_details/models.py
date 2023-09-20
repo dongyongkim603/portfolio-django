@@ -38,6 +38,12 @@ class PageDetails(models.Model):
 
     def get_resume(self):
         if self.resume:
-            resume_path = self.resume.path  # Get the file path of the resume
+            resume_path = self.resume.path
             return convert_docx_to_html(resume_path)
+        return ''
+
+    def get_resume_file(self):
+        if self.resume:
+            resume_path = self.resume.path
+            return resume_path
         return ''

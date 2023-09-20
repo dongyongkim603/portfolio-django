@@ -11,3 +11,12 @@ class PageDetailSerializer(serializers.ModelSerializer):
             'url',
             'get_slug'
         )
+
+class ResumeFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PageDetails
+        fields = (
+            'get_resume_file',
+            'url',
+            'get_slug'
+        )        
