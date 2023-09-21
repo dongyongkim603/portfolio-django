@@ -7,7 +7,17 @@ class PageDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = PageDetails
         fields = (
-            'get_resume',
+            'get_resume_html',
+            'get_resume_url',
             'url',
             'get_slug'
         )
+
+class ResumeFileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PageDetails
+        fields = (
+            'get_resume_file',
+            'url',
+            'get_slug'
+        )        

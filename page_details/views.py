@@ -1,15 +1,16 @@
-from django.http import Http404
-
+import os
+from django.http import Http404, HttpResponse
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from rest_framework import status
 
 from .models import PageDetails
-from .serializers import PageDetailSerializer
+from .serializers import PageDetailSerializer, ResumeFileSerializer
+
 
 class HomePageDetails(APIView):
-   
+  
     def get_object(self):
         try:
             page = PageDetails.objects.filter(slug='homepage')
@@ -21,11 +22,15 @@ class HomePageDetails(APIView):
         page = self.get_object()
         serializer = PageDetailSerializer(page, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
-    def post(self, request, format=None):
-        serializer = PageDetailSerializer(data=request.data)
-        print(serializer)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class DownloadResume(APIView):
+    def get(self, request, format=None):
+        file_path = os.path.join('/Users/johnhaney/Code/Django/John_portfolio/portfolio_django/media/uploads/resumes/John_William_Meehan_Haney_Resume.docx')
+        try:
+            with open(file_path, 'rb') as fh:
+                response = HttpResponse(fh.read(), content_type="application/octet-stream")
+                response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                return response
+        except PageDetails.DoesNotExist:
+            raise Http404 
+

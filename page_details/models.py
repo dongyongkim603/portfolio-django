@@ -36,8 +36,20 @@ class PageDetails(models.Model):
     def get_slug(self):
         return self.slug
 
-    def get_resume(self):
+    def get_resume_html(self):
         if self.resume:
-            resume_path = self.resume.path  # Get the file path of the resume
+            resume_path = self.resume.path
             return convert_docx_to_html(resume_path)
         return ''
+    
+    def get_resume_url(self):
+        if self.resume:
+            return self.resume.path
+        return None
+
+    def get_resume_file(self):
+        if self.resume:
+            with open(self.resume.path, 'rb') as resume_file:
+                opened_file = resume_file.read()
+            return opened_file
+        return None
