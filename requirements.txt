@@ -1,0 +1,19 @@
+# requirements.txt
+
+# Django
+Django==3.2.10
+
+# Django REST framework
+djangorestframework==3.12.4
+
+# CORS headers
+django-cors-headers==3.10.0
+
+#djoser
+djoser==4.2.4
+
+# PIllow
+Pillow==10.1.0
+
+# mamoth
+mammoth==1.6.0
